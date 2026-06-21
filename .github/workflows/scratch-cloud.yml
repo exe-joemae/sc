@@ -1,0 +1,33 @@
+name: Scratch Cloud Sync
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"  # 1分ごとに実行
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run sync script
+        run: python sync.py
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add database/
+          git commit -m "Update database" || echo "No changes"
+          git push
