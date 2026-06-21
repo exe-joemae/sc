@@ -47,22 +47,40 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
-// API: プロジェクト紐づけ登録
+// API: プロジェクト紐づけ登録（自作IDを自動採番）
 app.post("/api/project", (req, res) => {
-  const { customProjectId, scratchProjectId } = req.body;
+  const { scratchProjectId } = req.body;
 
-  if (!customProjectId || !scratchProjectId) {
-    return res.status(400).json({ error: "customProjectId と scratchProjectId は必須です。" });
-  }
-
-  if (!/^\d{4}$/.test(customProjectId)) {
-    return res.status(400).json({ error: "customProjectId は4桁の10進数で入力してください。" });
+  if (!scratchProjectId) {
+    return res.status(400).json({ error: "scratchProjectId は必須です。" });
   }
 
   const projects = loadJson(PROJECTS_FILE);
 
+  // すでに登録済みの Scratch プロジェクトID ならそのまま返す
+  for (const customId in projects) {
+    if (projects[customId].scratchProjectId === scratchProjectId) {
+      return res.json({
+        message: "既に登録済みのプロジェクトです。",
+        customProjectId: customId,
+        scratchProjectId
+      });
+    }
+  }
+
+  // 自作プロジェクトIDを自動採番（0001〜9999）
+  const existingIds = Object.keys(projects).map(id => parseInt(id, 10));
+  const nextId = (existingIds.length === 0 ? 1 : Math.max(...existingIds) + 1);
+
+  if (nextId > 9999) {
+    return res.status(400).json({ error: "プロジェクトIDが上限に達しました。" });
+  }
+
+  const customProjectId = nextId.toString().padStart(4, "0");
+
+  // 保存
   projects[customProjectId] = {
-    scratchProjectId: scratchProjectId,
+    scratchProjectId,
     createdAt: new Date().toISOString()
   };
 
