@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scratch クラウドサービス加入設定</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 20px; }
+    h1 { margin-bottom: 10px; }
+    section { margin-bottom: 30px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; }
+    label { display: block; margin-top: 8px; }
+    input { padding: 6px; margin-top: 4px; width: 250px; }
+    button { margin-top: 10px; padding: 8px 16px; }
+    .result { margin-top: 10px; font-size: 0.9rem; color: #333; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Scratch クラウドサービス加入設定サイト</h1>
 
+  <section>
+    <h2>1. プロジェクト紐づけ設定</h2>
+    <p>4桁の自作プロジェクトIDと、Scratch純正プロジェクトIDを紐づけします。</p>
+
+    <label>自作プロジェクトID（4桁・10進）</label>
+    <input id="customProjectId" placeholder="例: 0001" />
+
+    <label>Scratch純正プロジェクトID</label>
+    <input id="scratchProjectId" placeholder="例: 123456789" />
+
+    <button onclick="registerProject()">プロジェクトを登録</button>
+
+    <div id="projectResult" class="result"></div>
+  </section>
+
+  <section>
+    <h2>2. ユーザー登録（アカウント番号発行）</h2>
+    <p>Scratch のユーザー名を登録し、クラウドサービス用のアカウント番号を発行します。</p>
+
+    <label>Scratchユーザー名</label>
+    <input id="username" placeholder="例: neko_taro" />
+
+    <button onclick="registerUser()">ユーザーを登録</button>
+
+    <div id="userResult" class="result"></div>
+  </section>
+
+  <section>
+    <h2>3. 登録済み情報の確認</h2>
+    <button onclick="fetchProjects()">プロジェクト一覧を取得</button>
+    <button onclick="fetchUsers()">ユーザー一覧を取得</button>
+
+    <div id="infoResult" class="result"></div>
+  </section>
+
+  <script>
+    async function registerProject() {
+      const customProjectId = document.getElementById("customProjectId").value.trim();
+      const scratchProjectId = document.getElementById("scratchProjectId").value.trim();
+      const resultEl = document.getElementById("projectResult");
+
+      resultEl.textContent = "送信中...";
+
+      try {
+        const res = await fetch("/api/project", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ customProjectId, scratchProjectId })
+        });
+        const data = await res.json();
+        resultEl.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        resultEl.textContent = "エラーが発生しました: " + e.message;
+      }
+    }
+
+    async function registerUser() {
+      const username = document.getElementById("username").value.trim();
+      const resultEl = document.getElementById("userResult");
+
+      resultEl.textContent = "送信中...";
+
+      try {
+        const res = await fetch("/api/user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        resultEl.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        resultEl.textContent = "エラーが発生しました: " + e.message;
+      }
+    }
+
+    async function fetchProjects() {
+      const resultEl = document.getElementById("infoResult");
+      resultEl.textContent = "取得中...";
+      try {
+        const res = await fetch("/api/projects");
+        const data = await res.json();
+        resultEl.textContent = "プロジェクト一覧:\n" + JSON.stringify(data, null, 2);
+      } catch (e) {
+        resultEl.textContent = "エラーが発生しました: " + e.message;
+      }
+    }
+
+    async function fetchUsers() {
+      const resultEl = document.getElementById("infoResult");
+      resultEl.textContent = "取得中...";
+      try {
+        const res = await fetch("/api/users");
+        const data = await res.json();
+        resultEl.textContent = "ユーザー一覧:\n" + JSON.stringify(data, null, 2);
+      } catch (e) {
+        resultEl.textContent = "エラーが発生しました: " + e.message;
+      }
+    }
+  </script>
+</body>
+</html>
