@@ -19,7 +19,7 @@ Scratch から送られるデータ形式：
 | 4 | データロード |
 
 ### GitHub 保存先
-> users/[ユーザーコード]/
->> display.txt
->> username.txt
->> data.txt
+> users/[ユーザーコード]/  
+> ├ display.txt  
+> ├ username.txt  
+> └ data.txt
