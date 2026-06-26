@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>ユーザー管理ダッシュボード</h1>
+
+    <input id="uid" placeholder="ユーザーコード (例: 000100020003)">
+    <button onclick="loadUser()">読み込み</button>
+
+    <div id="info" style="display:none;">
+        <h2>ユーザー情報</h2>
+        <label>表示名</label>
+        <input id="display">
+
+        <label>ユーザー名</label>
+        <input id="username">
+
+        <label>データ</label>
+        <textarea id="data"></textarea>
+
+        <button onclick="saveUser()">保存</button>
+    </div>
+
+    <script>
+        async function loadUser() {
+            const id = document.getElementById("uid").value;
+            const res = await fetch(`/api/user/${id}`);
+            const json = await res.json();
+
+            document.getElementById("display").value = json.display;
+            document.getElementById("username").value = json.username;
+            document.getElementById("data").value = json.data;
+
+            document.getElementById("info").style.display = "block";
+        }
+
+        async function saveUser() {
+            const id = document.getElementById("uid").value;
+
+            await fetch(`/api/user/${id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    display: document.getElementById("display").value,
+                    username: document.getElementById("username").value,
+                    data: document.getElementById("data").value
+                })
+            });
+
+            alert("保存しました");
+        }
+    </script>
+</body>
+</html>
