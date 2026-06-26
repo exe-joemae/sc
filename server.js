@@ -5,6 +5,7 @@ import { handleScratchRequest } from "./scratch.js";
 import { getUserInfo, setUserInfo } from "./userManager.js";
 import { getScratchProjectInfo } from "./scratchProject.js";
 import { createAccount, login } from "./auth.js";
+import { generateMappingText } from "./converter.js";
 
 const app = express();
 app.use(express.json());
@@ -55,4 +56,10 @@ app.post("/api/login", async (req, res) => {
     if (result.ok) req.session.user = username;
 
     res.json(result);
+});
+
+app.get("/download/mapping.txt", (req, res) => {
+    const text = generateMappingText();
+    res.setHeader("Content-Type", "text/plain");
+    res.send(text);
 });
