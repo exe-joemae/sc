@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { handleScratchRequest } from "./scratch.js";
 import { getUserInfo, setUserInfo } from "./userManager.js";
 import { getScratchProjectInfo } from "./scratchProject.js";
+import { createAccount, login } from "./auth.js";
 
 const app = express();
 app.use(express.json());
@@ -39,4 +40,19 @@ app.listen(10000, () => {
 app.get("/api/project/:id", async (req, res) => {
     const info = await getScratchProjectInfo(req.params.id);
     res.json(info || { error: "not_found" });
+});
+
+app.post("/api/signup", async (req, res) => {
+    const { userCode, display, username, password } = req.body;
+    const result = await createAccount(userCode, display, username, password);
+    res.json(result);
+});
+
+app.post("/api/login", async (req, res) => {
+    const { userCode, password } = req.body;
+    const result = await login(userCode, password);
+
+    if (result.ok) req.session.user = userCode;
+
+    res.json(result);
 });
