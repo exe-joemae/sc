@@ -45,7 +45,3 @@ export async function loadFromGitHub(path) {
     const json = await res.json();
     return Buffer.from(json.content, "base64").toString();
 }
-
-console.log("PUT", url);
-console.log("BODY", content);
-console.log("TOKEN", GITHUB_TOKEN ? "OK" : "MISSING");
