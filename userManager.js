@@ -22,3 +22,14 @@ export async function setUserInfo(userNum, info) {
     if (info.data !== undefined)
         await saveToGitHub(`${folder}/data.txt`, info.data);
 }
+
+export async function getUserSlots(userNum) {
+    const folder = `users/${userNum}/slots.json`;
+    const json = await loadFromGitHub(folder);
+    return json ? JSON.parse(json) : { slots: [] };
+}
+
+export async function saveUserSlots(userNum, slots) {
+    const folder = `users/${userNum}/slots.json`;
+    await saveToGitHub(folder, JSON.stringify({ slots }));
+}
