@@ -1,10 +1,38 @@
 body {
+    background: #f0f2f5;
     font-family: sans-serif;
-    padding: 20px;
+    display: flex;
+    justify-content: center;
+    padding-top: 80px;
 }
 
-input, textarea {
-    display: block;
-    width: 300px;
-    margin-bottom: 10px;
+.card {
+    background: white;
+    padding: 30px;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #4a6cf7;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #3b57d6;
 }
