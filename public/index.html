@@ -1,11 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Scratch Cloud Service</title>
+    <title>Login</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="card">
     <h1>Scratch Cloud Service</h1>
-    <a href="dashboard.html">ダッシュボードへ</a>
+
+    <input id="userCode" placeholder="ユーザーコード (例: 000100020003)">
+    <input id="password" type="password" placeholder="パスワード">
+
+    <button onclick="login()">ログイン</button>
+
+    <p>アカウントがない？ <a href="signup.html">作成する</a></p>
+
+    <p id="msg"></p>
+</div>
+
+<script>
+async function login() {
+    const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            userCode: userCode.value,
+            password: password.value
+        })
+    });
+
+    const json = await res.json();
+    if (json.ok) location.href = "dashboard.html";
+    else msg.innerText = "ログイン失敗";
+}
+</script>
 </body>
 </html>
