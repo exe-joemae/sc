@@ -45,9 +45,13 @@ app.get("/api/project/:id", async (req, res) => {
 
 app.post("/api/signup", async (req, res) => {
     const { username, display, password } = req.body;
+
+    console.log("SIGNUP:", username);
+
     const result = await createAccount(username, display, password);
     res.json(result);
 });
+
 
 app.post("/api/login", async (req, res) => {
     const { username, password } = req.body;
