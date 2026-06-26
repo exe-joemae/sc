@@ -43,16 +43,16 @@ app.get("/api/project/:id", async (req, res) => {
 });
 
 app.post("/api/signup", async (req, res) => {
-    const { userCode, display, username, password } = req.body;
-    const result = await createAccount(userCode, display, username, password);
+    const { username, display, password } = req.body;
+    const result = await createAccount(username, display, password);
     res.json(result);
 });
 
 app.post("/api/login", async (req, res) => {
-    const { userCode, password } = req.body;
-    const result = await login(userCode, password);
+    const { username, password } = req.body;
+    const result = await login(username, password);
 
-    if (result.ok) req.session.user = userCode;
+    if (result.ok) req.session.user = username;
 
     res.json(result);
 });
